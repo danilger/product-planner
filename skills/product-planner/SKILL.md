@@ -187,7 +187,7 @@ Order slices; call out dependencies and top risky assumptions. Single-slice MVPs
 
 Present the full plan. Apply feedback (loop back as needed). Require explicit approval ("утверждаю" / "approve" / equivalent).
 
-**On approval — persist** planning files. Earlier disk writes only if the user asks.
+**On approval — persist** the product plan artifacts (`product.md`, and `roadmap.md` / `domain.md` when needed). `planning/context.md` may be created or updated before approval when inbox materials are in use. All other planning artifacts are written after final approval unless the user explicitly requests an earlier draft.
 
 ### 8 OpenSpec handoff
 
@@ -209,14 +209,12 @@ If no → return to Discovery or Domain.
 
 ## Artifacts (target product project)
 
-Write under `planning/` after Review approval (default):
-
 | File | When |
 | --- | --- |
-| `planning/context.md` | Inbox was used |
-| `planning/product.md` | Always on persist |
-| `planning/roadmap.md` | More than one slice or ordering/dependencies matter |
-| `planning/domain.md` | Complex / non-trivial domain only |
+| `planning/context.md` | When inbox is in use — **may write/update before approval** (source index, not the product plan) |
+| `planning/product.md` | After final approval (always on persist) |
+| `planning/roadmap.md` | After final approval, if more than one slice or ordering/dependencies matter |
+| `planning/domain.md` | After final approval, if Complex / non-trivial domain |
 
 Tiny products: single `planning/product.md` with embedded slices and order.
 
@@ -297,7 +295,7 @@ Product Planner stops here. Next: open an OpenSpec change for slice 1.
 ## Gotchas
 
 - Minimal depth first—skip empty ritual
-- Questions before documents; persist after final approval (`context.md` index only when inbox is used)
+- Questions before plan docs; persist `product.md` / `roadmap.md` / `domain.md` after final approval; `context.md` may land earlier when inbox is active
 - Do not auto-create empty `planning/inbox/`
 - Inbox tags only when materials exist
 - Only two mandatory gates: MVP and final plan
