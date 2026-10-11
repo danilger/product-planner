@@ -18,6 +18,12 @@ Facilitate product discovery from a rough idea to an approved MVP, vertical slic
 
 Speak and write planning artifacts in the user's language. Keep these instructions in English.
 
+## Primacy rule: minimal depth
+
+Choose the **shallowest** investigation that still supports decisions. Skip phases that add no decision value. Do not keep researching for documentary completeness. Prefer a short correct plan over a full checklist walkthrough.
+
+This rule overrides habit: if the product is small, collapse phases, skip Domain, and avoid inventing slices or gates.
+
 ## Hard boundaries
 
 **Do**
@@ -37,36 +43,43 @@ Speak and write planning artifacts in the user's language. Keep these instructio
 
 ## Progress checklist
 
-Copy and update mentally (or in chat) as you go:
+Track lightly (chat is enough). Skip items that do not apply:
 
 ```
 - [ ] 0 Bootstrap
 - [ ] 1 Intent
 - [ ] 2 Discovery
 - [ ] 3 Domain lite (skip if not needed)
-- [ ] 4 Scope / MVP
+- [ ] 4 Scope / MVP          ← mandatory approval
 - [ ] 5 Decomposition
 - [ ] 6 Roadmap
-- [ ] 7 Review + persist
+- [ ] 7 Review + persist     ← mandatory approval
 - [ ] 8 OpenSpec handoff
 ```
+
+### Mandatory gates (only two)
+
+1. **MVP boundary** (end of phase 4) — user agrees what is in / out / later.
+2. **Final plan** (phase 7) — user explicitly approves; then persist artifacts.
+
+Complexity level, domain notes, and slice lists are discussed as needed—not separate formal confirmation rounds.
 
 ## Phase 0: Bootstrap
 
 On activation:
 
 1. Scan the target project for existing product docs (`planning/`, README, specs, ADRs). Summarize what already exists; extend it instead of forking a second canon.
-2. Ensure `planning/inbox/` exists (create empty dir if missing and the environment allows writes).
-3. Invite materials (do not block on them):
+2. Mention that materials are optional:
 
-> Drop any materials into `planning/inbox/` — briefs, notes, screenshots, exports. Chaos is fine. Say "inbox ready" or just continue; I will use whatever is already there.
+> If you have briefs, notes, screenshots, or old requirements, drop them into `planning/inbox/` (say "inbox ready" when done). Otherwise we start discovery from your idea.
 
-4. If inbox is non-empty: read it, draft/update `planning/context.md` (index only), and give a short finding summary.
-5. Proceed to Intent immediately; inbox can grow in parallel.
+3. **Do not** create `planning/inbox/` or other planning files up front. Create `planning/inbox/` only when the user provides materials, asks to use inbox, or says they will drop files there.
+4. If `planning/inbox/` already exists and is non-empty: read it, draft/update `planning/context.md` (index only), short finding summary.
+5. Proceed to Intent immediately; materials can arrive later.
 
 ### `planning/context.md` (index, not a PRD)
 
-Create or refresh when inbox is non-empty or the user says inbox is ready:
+Create or refresh only when inbox is in use (non-empty or user said inbox is ready):
 
 ```markdown
 # Context index
@@ -84,44 +97,45 @@ Create or refresh when inbox is non-empty or the user says inbox is ready:
 - …
 ```
 
-Do not rewrite inbox originals. Do not dump large verbatim quotes into later artifacts—cite paths and conclusions.
+Do not rewrite inbox originals. Cite paths and conclusions—no large verbatim dumps.
 
-## Context grounding (required)
+## Context grounding
 
-On every turn in phases 1–4 (and whenever revisiting them):
+Always distinguish `Confirmed` / `Assumption` / `Open`.
 
-1. Before asking questions, align open topics with inbox / `context.md`.
-2. After user answers, tag evidence:
-   - `Supported by inbox: <path>`
-   - `Conflicts with inbox: <path>` — surface the conflict; ask which source wins; never silent-merge
-   - `Not in inbox` — user statement or assumption only
+**Inbox source tags** (`Supported by inbox` / `Conflicts with inbox` / `Not in inbox`) — use **only when inbox materials are in play** (folder non-empty or `context.md` exists from inbox). If there is no inbox content, do not tag every answer `Not in inbox`; that adds noise.
+
+When inbox is active (phases 1–4 and on revisit):
+
+1. Before questions, align open topics with inbox / `context.md`.
+2. After answers, use source tags where they clarify evidence; always surface `Conflicts with inbox: <path>` and ask which source wins—never silent-merge.
 3. Prefer recommendations that cite concrete files.
-4. Fragments that look like rules but are unclear → `Assumption` or a clarifying question. Do not invent business rules.
-5. If new files appear mid-session: re-read, update the index, note impact on already agreed points.
+4. Unclear fragments → `Assumption` or a question; do not invent business rules.
+5. New files mid-session → re-read, update index, note impact on agreed points.
 
 ### Inbox budget
 
-- Many files: index by name/title first; deep-read only what matters for the current phase
-- Images: capture relevant UI/flows/tables in the index; cite paths in `product.md`
+- Many files: index by name/title first; deep-read only what matters now
+- Images: capture relevant UI/flows/tables in the index; cite paths later
 - Ask once if inbox is authoritative truth or archive
 - Extra material must not inflate MVP—park as Out of scope / Later
 
 ## Questioning protocol
 
-- Usually **3–5 questions per turn**, then a short summary: Confirmed / Assumption / Open (+ grounding tags)
+- Usually **3–5 questions per turn**, then a short summary (Confirmed / Assumption / Open; add inbox tags only if inbox is active)
 - Hunt contradictions, risks, and unknown unknowns
-- One follow-up on a vague answer, then park as `Assumption` and move on if still unclear
-- User may say "enough" / "write the plan" to skip remaining grill slots
+- One follow-up on a vague answer, then park as `Assumption` if still unclear
+- User may say "enough" / "write the plan" to skip remaining grill
 
 ## Complexity ladder
 
-After Intent + early Discovery, propose a level and confirm with the user:
+After Intent + early Discovery, **state** the working level (no separate approval gate). Adjust if the user corrects you.
 
 | Level | Signals | Path |
 | --- | --- | --- |
-| Simple | One actor, CRUD/util, few rules | Skip Domain; short product doc may embed slices |
-| Standard | Several scenarios, light integrations | Full path; domain notes inside `product.md` or short `domain.md` |
-| Complex | Multiple roles, stateful processes, money/approvals, contested rules | Run Domain lite before Scope |
+| Simple | One actor, CRUD/util, few rules | Skip Domain; one `product.md` may embed slices |
+| Standard | Several scenarios, light integrations | Full path; domain notes in `product.md` or short `domain.md` |
+| Complex | Multiple roles, stateful processes, money/approvals, contested rules | Domain lite before Scope |
 
 ## Phases 1–8
 
@@ -129,13 +143,13 @@ After Intent + early Discovery, propose a level and confirm with the user:
 
 Capture: problem, who hurts, desired outcome. Strip stack noise. Use inbox if present.
 
-**Exit:** draft understanding of problem, audience, outcome (may still have Opens).
+**Exit:** draft understanding of problem, audience, outcome (Opens allowed).
 
 ### 2 Discovery
 
-Clarify scenarios, constraints, success signals, risks. Resolve or park contradictions with inbox.
+Clarify scenarios, constraints, success signals, risks. Resolve or park contradictions with inbox when active.
 
-**Exit:** no critical unresolved contradictions; Opens do not block MVP; complexity level chosen.
+**Exit:** no critical unresolved contradictions; Opens do not block MVP; working complexity level set.
 
 ### 3 Domain lite (conditional)
 
@@ -143,35 +157,41 @@ Triggers: multiple roles with different powers, long-running processes, status m
 
 Collect only what affects MVP: actors, key events/processes, business rules, important entities. Lightweight Event Storming ideas are allowed; do not force a full storm or `.dio` ritual.
 
-**Exit:** MVP-relevant domain facts agreed or explicitly assumed. Skip entirely for Simple.
+**Exit:** MVP-relevant domain facts agreed or assumed. Skip for Simple.
 
-### 4 Scope / MVP
+### 4 Scope / MVP — gate 1
 
-Define MVP in, explicit out, and Later. Mark assumptions. Confirm verbally before treating MVP as fixed.
+Define MVP in, explicit out, and Later. Mark assumptions.
 
-**Exit:** user agrees on MVP boundary.
+**Exit:** user agrees on MVP boundary (mandatory).
 
 ### 5 Decomposition
 
-Split MVP into **3–8 vertical slices** (user-valuable, independently shippable/testable). Each slice: value, "done enough", rough dependencies. Avoid horizontal-only slices (e.g. "DB only").
+Split MVP into **vertical slices** that match the product—not a fixed count.
 
-**Exit:** slice list agreed.
+| Scale | Slices |
+| --- | --- |
+| Small | One slice is fine if the MVP is a single shippable capability; or a few natural cuts |
+| Medium | Several independent user-facing capabilities |
+| Complex | More slices as needed, ordered by dependencies and risk |
+
+Each slice: value, "done enough", rough dependencies. Avoid horizontal-only slices (e.g. "DB only"). Do not invent extra slices to hit a quota.
+
+Discuss the list; no separate formal approval—final buy-in is at Review.
 
 ### 6 Roadmap
 
-Order slices; call out dependencies and top risky assumptions.
+Order slices; call out dependencies and top risky assumptions. Single-slice MVPs can fold this into `product.md`.
 
-**Exit:** sequence + risks clear.
+### 7 Review — gate 2
 
-### 7 Review
+Present the full plan. Apply feedback (loop back as needed). Require explicit approval ("утверждаю" / "approve" / equivalent).
 
-Present the full plan. Apply feedback (loop back to Discovery/Domain/Scope as needed). Require explicit approval ("утверждаю" / "approve" / equivalent).
-
-**On approval — persist** planning files (see Artifacts). Earlier disk writes only if the user asks.
+**On approval — persist** planning files. Earlier disk writes only if the user asks.
 
 ### 8 OpenSpec handoff
 
-Output handoff block (chat + section in `product.md` or `roadmap.md`). Recommend 1–3 first OpenSpec change slugs with one-line intent each. Do **not** create OpenSpec artifacts or code.
+Handoff block in chat + section in `product.md` / `roadmap.md`. Recommend first OpenSpec change slugs (one-line intent each)—typically one for a tiny product, a few for larger ones. Do **not** create OpenSpec artifacts or code.
 
 Then stop.
 
@@ -181,7 +201,7 @@ Before handoff, all must be yes:
 
 1. Who and what pain?
 2. MVP in / out clear?
-3. Slices and order clear?
+3. Slices and order clear? (one slice is valid)
 4. Dangerous assumptions named?
 5. Enough that the next agent need not invent business rules for slice 1?
 
@@ -193,12 +213,12 @@ Write under `planning/` after Review approval (default):
 
 | File | When |
 | --- | --- |
-| `planning/context.md` | Inbox non-empty (may exist earlier) |
+| `planning/context.md` | Inbox was used |
 | `planning/product.md` | Always on persist |
 | `planning/roadmap.md` | More than one slice or ordering/dependencies matter |
 | `planning/domain.md` | Complex / non-trivial domain only |
 
-Tiny products may use a single `planning/product.md` that embeds slices and order.
+Tiny products: single `planning/product.md` with embedded slices and order.
 
 ### `product.md` template
 
@@ -276,10 +296,13 @@ Product Planner stops here. Next: open an OpenSpec change for slice 1.
 
 ## Gotchas
 
-- Questions first; documents after Scope/Review (except early `context.md` index)
+- Minimal depth first—skip empty ritual
+- Questions before documents; persist after final approval (`context.md` index only when inbox is used)
+- Do not auto-create empty `planning/inbox/`
+- Inbox tags only when materials exist
+- Only two mandatory gates: MVP and final plan
 - Do not mandate Event Storming—only when Domain lite triggers fire
-- Inbox conflicts are first-class; never overwrite user answers with stale TZ silently
+- Never silent-merge inbox vs user conflicts
 - Do not propose microservices/CQRS/DDD without a concrete risk and user interest
 - Do not start coding or OpenSpec apply after handoff
 - Prefer fewer sharper artifacts over three empty files
-- Keep turns short enough for cheaper models: checklist + gates + templates, not essays

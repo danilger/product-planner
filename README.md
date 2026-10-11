@@ -12,47 +12,45 @@ After an interactive session you should have:
 
 - A clear product intent and audience
 - An agreed MVP (in / out / later)
-- Vertical slices with dependencies and order
+- Vertical slices with dependencies and order (one slice is fine for a tiny MVP)
 - Distinctions between confirmed facts, assumptions, and open questions
-- Optional grounding against materials you dropped into `planning/inbox/`
+- Optional grounding against materials in `planning/inbox/`
 - Suggested first OpenSpec change slugs (names + intent only)
 
 ## Process (short)
 
-0. **Bootstrap** — read existing docs; invite `planning/inbox/` materials  
+0. **Bootstrap** — read existing docs; offer optional inbox  
 1. **Intent** — problem, users, outcome  
-2. **Discovery** — questions, contradictions, risks (grounded in inbox when present)  
+2. **Discovery** — questions, risks (grounded in inbox when present)  
 3. **Domain lite** — only if the domain is non-trivial  
-4. **Scope** — MVP boundary  
-5. **Decomposition** — 3–8 vertical slices  
+4. **Scope** — MVP boundary (**approval**)  
+5. **Decomposition** — vertical slices sized to the product  
 6. **Roadmap** — order and risks  
-7. **Review** — approve, then write `planning/*.md`  
+7. **Review** — approve (**approval**), then write `planning/*.md`  
 8. **Handoff** — OpenSpec next steps; stop  
 
-Depth scales: a small utility may need only a short plan; a complex product can use domain modeling and a fuller roadmap.
+Depth scales with the product. Only MVP and final plan are hard approval gates.
 
-## Inbox (optional, from the start)
+## Inbox (optional)
 
-Drop chaotic materials into the **target product project**:
+If you have materials, put them in the **target product project**:
 
 ```text
 planning/inbox/     # notes, briefs, screenshots, exports — any mess
-planning/context.md # short index written by the agent
+planning/context.md # short index written by the agent when inbox is used
 planning/product.md # after you approve the plan
 planning/roadmap.md # if multiple slices / ordering matters
 planning/domain.md  # only for non-trivial domains
 ```
 
-You can add files at any time. The agent should cite inbox sources, flag conflicts with your answers, and keep MVP from ballooning off old specs.
+The agent creates `planning/inbox/` when you start using it—not on every activation. You can add files mid-session. Conflicts between inbox and your answers are surfaced, not silently merged.
 
 ## Example session
 
-In an agent chat (with the skill installed), roughly:
-
 1. `/product-planner` (or describe a product idea so the skill activates)
 2. Optionally drop files into `planning/inbox/` and say `inbox ready`
-3. Answer a few rounds of clarifying questions
-4. Approve MVP and slice order
+3. Answer clarifying questions
+4. Approve MVP, then the final plan
 5. Get `planning/product.md` (+ roadmap/domain as needed) and suggested OpenSpec change names
 6. Create the first OpenSpec change yourself (e.g. `/opsx:propose`)
 
@@ -62,20 +60,15 @@ Requires Node for the [skills](https://github.com/vercel-labs/skills) CLI.
 
 ```bash
 # Project-local (Cursor)
-npx skills add <owner>/<repo> -a cursor -y
+npx skills add danilger/product-planner -a cursor -y
 
 # Global (all projects on this machine)
-npx skills add <owner>/<repo> -g -a cursor -y
+npx skills add danilger/product-planner -g -a cursor -y
 ```
-
-Replace `<owner>/<repo>` with the GitHub path of this repository after you publish it.
 
 ### Manual install
 
-Copy the skill folder into an agent skills directory:
-
 ```bash
-# Cursor / Agent Skills common paths
 cp -r skills/product-planner .agents/skills/product-planner
 # or
 cp -r skills/product-planner ~/.cursor/skills/product-planner
@@ -83,11 +76,13 @@ cp -r skills/product-planner ~/.cursor/skills/product-planner
 
 ## Update
 
+If you installed via the skills CLI, refresh from the recorded source:
+
 ```bash
-npx skills update product-planner
+npx skills update product-planner -y
 ```
 
-Or re-copy the folder if you installed manually.
+Use `-g` or `-p` to limit scope to global or project installs. Re-run `npx skills add danilger/product-planner …` if the skill was installed manually or the lockfile has no source entry.
 
 ## Repository layout
 
