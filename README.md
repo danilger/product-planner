@@ -12,8 +12,8 @@ After an interactive session you should have:
 
 - A clear product intent and audience
 - An agreed MVP (in / out / later)
-- **Technical direction** (required / forbidden / existing / open)—or citations to `AGENTS.md` / architecture docs
-- **UX/UI direction** when the product has a meaningful UI (or an explicit N/A)
+- **Technical direction** (required / forbidden / existing / open)—or citations to `AGENTS.md` / architecture docs; sticky choices (framework, UI kit, backend shape) are confirmed or explicitly deferred, not guessed
+- **UX/UI direction** when the product has a meaningful UI (or an explicit N/A), including critical journeys that affect MVP / change boundaries
 - Optional capability groupings for orientation
 - An ordered change queue (`## Ordered Changes`, `CH-001`…) with slug, optional capability label, goal, scope, acceptance, dependencies
 - Distinctions between confirmed facts, assumptions, and open questions
@@ -33,10 +33,10 @@ Depth is adaptive: a CLI may skip UX/UI; a personal site may treat visual direct
 0. **Bootstrap** — read existing docs and implementation; offer optional inbox  
 1. **Intent** — problem, users, outcome  
 2. **Product Discovery** — scenarios, risks (grounded in inbox when present)  
-3. **Technical Discovery** — stack preferences, integrations, **forbidden** choices (cite existing canon when present)  
-4. **UX/UI Discovery** — visual direction / references (skip if no UI)  
+3. **Technical Discovery** — stack preferences, integrations, **forbidden** choices (cite existing canon when present; no silent Assumed on sticky stack choices)  
+4. **UX/UI Discovery** — visual direction, references, critical journeys (skip if no UI)  
 5. **Domain lite** — only if the domain is non-trivial  
-6. **Discovery Coverage** — internal check that material product / tech / UX gaps are closed or deferred  
+6. **Discovery Coverage** — internal check that material product / tech / UX gaps are closed or deferred; sticky decisions not Assumed  
 7. **Scope** — MVP boundary (**approval**)  
 8. **Decomposition** — capabilities (optional) → OpenSpec-sized changes  
 9. **Roadmap** — ordered change queue  

@@ -10,7 +10,7 @@ description: >-
   specs/tasks, or implementing code.
 license: MIT
 metadata:
-  version: "1.2.0"
+  version: "1.2.1"
 ---
 
 # Product Planner
@@ -30,6 +30,25 @@ This rule overrides habit: if the product is small, collapse phases, skip Domain
 > Do not assume product discovery is complete merely because functional requirements are clear. Identify technical constraints, implementation preferences, UX/UI direction, and explicitly forbidden approaches when they materially affect the product.
 
 Functional clarity alone is not enough for handoff when coding agents would otherwise choose framework, component library, or look-and-feel independently.
+
+## Sticky decisions (no silent Assumed)
+
+`Assumption` is fine for low-cost or easily reversed details. It is **not** allowed to close **sticky** decisions—choices that affect the whole product and are expensive to reverse later.
+
+**Sticky (must be Confirmed by the owner, cited from existing canon, or explicitly deferred with owner OK):**
+
+- Frontend framework / rendering model
+- UI kit / component library approach
+- Backend shape (same app vs separate API) when still open
+- Visual direction for a branded / marketing / portfolio UI
+
+**Not sticky by default** (may be Assumed or deferred without ceremony when not critical): host detail, exact DB engine if interchangeable, minor motion preferences, secondary copy tone.
+
+Rules:
+
+- Do **not** invent sticky values and label them `Assumption` to pass Discovery Coverage.
+- If sticky and unknown → ask, or get explicit “defer to OpenSpec / decide later” from the owner and record it under Open decisions.
+- Existing repo canon (e.g. `AGENTS.md` already fixes Hono + React SPA) counts as **Confirmed** via citation—do not re-ask unless the owner wants to override.
 
 ## Three levels of work
 
@@ -76,7 +95,7 @@ constraints:
 | --- | --- | --- |
 | **Product Discovery** | Who, problem, MVP capabilities, business rules | `planning/product.md` |
 | **Technical Discovery** | Stack, hosting, DB, auth, integrations, **forbidden** choices | sections in `product.md` (or `planning/technical.md` if large) |
-| **UX/UI Discovery** | Visual direction, references, nav, responsive, motion (if UI matters) | sections in `product.md` (or `planning/design.md` if large) |
+| **UX/UI Discovery** | Visual direction, critical journeys/nav, references, responsive, motion (if UI matters) | sections in `product.md` (or `planning/design.md` if large) |
 
 These are **directions of questioning inside one skill**, not separate agents. Depth of each depends on the project.
 
@@ -106,9 +125,9 @@ Ask for owner preferences and constraints, including **what is categorically unw
 
 Do not design schemas, route trees, or module layouts here.
 
-### UX/UI Discovery (direction, not mockups)
+### UX/UI Discovery (direction + critical journeys, not mockups)
 
-When UI matters, clarify enough that agents share one visual intent:
+When UI matters, clarify enough that agents share one visual intent **and** know the main interaction paths that shape MVP / change boundaries:
 
 - Desired impression / visual direction (minimal, editorial, tech, …)
 - Light / dark / system
@@ -118,8 +137,9 @@ When UI matters, clarify enough that agents share one visual intent:
 - Motion importance
 - Mobile-first vs desktop-first
 - Whether a shared design system / component kit is required
+- **Critical user journeys and navigation flows** when they affect MVP scope or change boundaries (e.g. how a visitor finds articles, moves from content to a lead form, how the owner publishes, preview-before-publish, locale switch). Do **not** create detailed wireframes unless requested.
 
-Stop when direction is clear enough for OpenSpec not to invent a conflicting aesthetic.
+Stop when direction and material journeys are clear enough for OpenSpec not to invent a conflicting aesthetic or invent navigation that splits changes wrongly.
 
 ## Hard boundaries
 
@@ -131,6 +151,7 @@ Stop when direction is clear enough for OpenSpec not to invent a conflicting aes
 - Reuse existing project docs and **existing code capabilities**; avoid parallel sources of truth
 - **Cite** existing canons (`AGENTS.md`, `ARCHITECTURE.md`, `openspec/config.yaml`, design tokens) instead of copying them into planning docs
 - Capture **forbidden** tech/UX choices, not only preferred ones
+- Keep sticky decisions Confirmed, cited, or explicitly deferred—never silent Assumed
 - Stop after OpenSpec handoff unless the user explicitly asks to continue elsewhere
 
 **Do not**
@@ -187,8 +208,10 @@ Rules:
 - If an area **materially affects** the product and is still Open → ask, or explicitly agree to defer that decision to OpenSpec (and record the deferral).
 - Example: unset database may be OK to defer; unset visual direction for a portfolio site is **not** OK to leave to random agent taste.
 - Existing repo: mark Technical from inspection + cite paths; only question gaps and conflicts.
+- **Sticky decisions** (see above): Confirmed, cited from canon, or deferred with owner OK only—**never** closed as Assumed guesses.
+- Critical journeys that affect MVP / change boundaries: ask until clear enough to size changes; do not invent navigation. Branded visual direction is sticky (Confirmed / cited / deferred)—not Assumed.
 
-**Do not enter MVP / Decomposition until** Product is solid enough to draft in/out, and every *material* Technical / UX/UI gap is Confirmed, explicitly Assumed, deferred with owner OK, or N/A.
+**Do not enter MVP / Decomposition until** Product is solid enough to draft in/out, every *material* Technical / UX/UI gap is Confirmed, cited, deferred with owner OK, or N/A, and **no sticky decision remains a silent Assumption**.
 
 ## Phase 0: Bootstrap
 
@@ -283,18 +306,18 @@ Clarify scenarios, success signals, risks, business constraints. Resolve or park
 Discover preferences, constraints, and **forbidden** approaches. Prefer inspection of the existing project over re-asking.
 
 - If stack is already canon → summarize + cite; ask only about gaps, migrations, or owner overrides.
-- If greenfield or ambiguous → short preference questions (framework, UI kit, styling, backend shape, DB, hosting, integrations, forbidden).
+- If greenfield or ambiguous → short preference questions (framework, UI kit, styling, backend shape, DB, hosting, integrations, forbidden). **Ask** sticky items; do not guess them.
 - Record integrations that affect many changes (email, LLM, payments) at planner level.
 
-**Exit:** material technical direction Confirmed, Assumed, explicitly deferred, or cited from existing docs. No folder/API design.
+**Exit:** sticky technical choices Confirmed, cited, or explicitly deferred with owner OK; other material tech may be Assumed. No folder/API design.
 
 ### 4 UX/UI Discovery (conditional)
 
 Skip when there is no meaningful end-user UI, or owner marks design out of scope.
 
-Otherwise clarify visual direction, theme, references (analyze if provided), information priority on key surfaces, responsive expectations, motion—only as deep as needed so agents share one look-and-feel.
+Otherwise clarify visual direction, theme, references (analyze if provided), information priority on key surfaces, responsive expectations, motion, and **critical user journeys / navigation** that affect MVP or change boundaries—only as deep as needed so agents share one look-and-feel and path through the product.
 
-**Exit:** material UX/UI direction Confirmed / Assumed / N/A. Not wireframes or component inventories.
+**Exit:** branded visual direction Confirmed, cited, or explicitly deferred with owner OK; material journeys clear enough for change boundaries; N/A if skipped. Not wireframes or component inventories.
 
 ### 5 Domain lite (conditional)
 
@@ -389,12 +412,13 @@ Before handoff, all must be yes:
 
 1. Who and what pain?
 2. MVP in / out clear?
-3. Material **Technical** direction known, cited, or explicitly deferred?
-4. Material **UX/UI** direction known, N/A, or explicitly deferred?
-5. Forbidden / constraint list clear enough to prevent stack or aesthetic drift?
-6. Changes are OpenSpec-sized (not epics), ordered, with acceptance?
-7. Dangerous assumptions named?
-8. Enough that the next agent need not invent scope **or** foundational stack/UI direction for change 1?
+3. Sticky **Technical** choices Confirmed, cited, or explicitly deferred (not Assumed)?
+4. Material **UX/UI** direction known, N/A, or explicitly deferred—and branded visual direction not Assumed?
+5. Critical journeys clear enough that change boundaries are not invented?
+6. Forbidden / constraint list clear enough to prevent stack or aesthetic drift?
+7. Changes are OpenSpec-sized (not epics), ordered, with acceptance?
+8. Dangerous assumptions named (and none are sticky guesses)?
+9. Enough that the next agent need not invent scope **or** foundational stack/UI direction for change 1?
 
 If no → return to the relevant Discovery direction, Domain, or Decomposition.
 
@@ -459,6 +483,9 @@ If `AGENTS.md` / architecture docs already define the stack, Technical Direction
 
 ### References
 - … (paths or URLs)
+
+### Critical journeys / navigation
+- … (only flows that affect MVP or change boundaries)
 
 ### UX constraints
 - …
@@ -568,6 +595,8 @@ Product Planner stops here.
 
 - Minimal depth first—skip empty ritual; still run Discovery Coverage for material gaps
 - Functional MVP clarity ≠ discovery complete—tech and UX/UI may still be open
+- Never close sticky decisions (framework, UI kit, backend shape, branded visual direction) as Assumed guesses
+- Clarify critical journeys when they affect MVP / change boundaries—not wireframes
 - Decomposition fails if you only name capabilities/epics—always produce OpenSpec-sized changes
 - Prefer thin end-to-end value over UI-then-DB-then-admin layering
 - Order changes globally; Capability is a field, not a section that reorders work
