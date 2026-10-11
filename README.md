@@ -13,7 +13,7 @@ After an interactive session you should have:
 - A clear product intent and audience
 - An agreed MVP (in / out / later)
 - Optional capability groupings for orientation
-- An ordered change queue (`CH-001`…) with slug, goal, scope, acceptance, dependencies
+- An ordered change queue (`## Ordered Changes`, `CH-001`…) with slug, optional capability label, goal, scope, acceptance, dependencies
 - Distinctions between confirmed facts, assumptions, and open questions
 - Optional grounding against materials in `planning/inbox/`
 - Handoff pointing at the **first pending** change for `/opsx:propose`
@@ -44,7 +44,7 @@ If you have materials, put them in the **target product project**:
 planning/inbox/     # notes, briefs, screenshots, exports — any mess
 planning/context.md # short index written by the agent when inbox is used
 planning/product.md # after you approve the plan
-planning/roadmap.md # ordered OpenSpec-sized changes
+planning/roadmap.md # global Ordered Changes queue (capability is a field)
 planning/domain.md  # only for non-trivial domains
 ```
 

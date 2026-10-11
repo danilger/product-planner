@@ -9,7 +9,7 @@ description: >-
   OpenSpec propose/apply, writing specs/tasks, or implementing code.
 license: MIT
 metadata:
-  version: "1.1.0"
+  version: "1.1.1"
 ---
 
 # Product Planner
@@ -42,8 +42,8 @@ Product Planner defines **what** and **in what order** (capabilities + changes).
 
 - Ask before inventing requirements; label `Confirmed` / `Assumption` / `Open`
 - Prefer user-valuable changes over horizontal tech layers
-- Size each change for one autonomous agent cycle
-- Reuse existing project docs; avoid parallel sources of truth
+- Size each change for one autonomous agent cycle (see Decomposition)
+- Reuse existing project docs and **existing code capabilities**; avoid parallel sources of truth
 - Stop after OpenSpec handoff unless the user explicitly asks to continue elsewhere
 
 **Do not**
@@ -82,7 +82,7 @@ Complexity, capabilities, and change lists are discussed as needed—not separat
 
 On activation:
 
-1. Scan the target project for existing product docs (`planning/`, README, specs, ADRs). Summarize what already exists; extend it instead of forking a second canon.
+1. Scan the target project for existing product docs (`planning/`, README, specs, ADRs) **and reusable implementation** (auth, CRUD patterns, shared UI, integrations already wired). Summarize what already exists; extend it instead of forking a second canon.
 2. Mention that materials are optional:
 
 > If you have briefs, notes, screenshots, or old requirements, drop them into `planning/inbox/` (say "inbox ready" when done). Otherwise we start discovery from your idea.
@@ -183,15 +183,16 @@ Define MVP in, explicit out, and Later. Mark assumptions.
 
 Two steps. Skip step A for Simple products when the MVP is already one or two changes.
 
-**A. Capabilities (optional)** — group MVP into large product abilities (e.g. Content, Leads). These are labels for orientation, **not** OpenSpec units and **not** a substitute for changes.
+**A. Capabilities (optional)** — name large product abilities for orientation (e.g. Content, Leads). Labels only—**not** OpenSpec units and **not** a substitute for changes. Do **not** use capability as the primary ordering structure later.
 
-**B. OpenSpec-sized changes** — split each capability (or the whole MVP) into **minimal meaningful changes**. Each change must:
+**B. OpenSpec-sized changes** — split the MVP into **minimal meaningful changes**. Each change must:
 
 - Deliver a **verifiable user-facing result** (or a necessary end-to-end path to one)
 - Have clear in/out boundaries
-- Be small enough for **one autonomous agent cycle**
+- Be small enough for **one autonomous agent cycle**: prefer changes that can be implemented and verified independently, with limited context, without requiring simultaneous edits across unrelated subsystems. **Split** when scope or acceptance becomes hard to reason about. No artificial quotas (LOC, hours).
 - Be usable without implementing the entire capability first
 - **Not** list technical tasks (those belong in OpenSpec)
+- **Reuse what exists** — before adding a change, check the codebase/docs for existing capabilities (auth, models, admin shells, email, i18n, etc.). Do not plan re-implementation unless modification is required; if reuse is assumed, state it under Scope (e.g. “uses existing auth”)
 
 | Scale | Changes |
 | --- | --- |
@@ -204,6 +205,7 @@ Two steps. Skip step A for Simple products when the MVP is already one or two ch
 - Epic slices: “Owner content”, “Leads”, “Comments” with no further split
 - Fake verticals / horizontal layers with nice names: “public pages with mock data” → “then storage” → “then admin CRUD” when a thin end-to-end path (create → publish → view) would prove value sooner
 - Task-shaped items: “add API”, “add DB schema”, “add UI”
+- Re-planning existing features (e.g. auth already works) as greenfield changes
 
 Prefer an early thin vertical (e.g. owner publishes one article and a visitor opens it) over layering UI, then DB, then admin.
 
@@ -211,7 +213,7 @@ Discuss the list; final buy-in is at Review.
 
 ### 6 Roadmap
 
-Build an **ordered queue of changes**, not a list of capabilities.
+Build a single **`## Ordered Changes`** queue. Cross-capability interleaving is normal (e.g. thin content publish → leads form → richer content admin). **Order is defined by this list and Dependencies, not by Capability sections.**
 
 For each change record:
 
@@ -219,8 +221,9 @@ For each change record:
 | --- | --- |
 | ID | Stable id, e.g. `CH-001` |
 | Slug | Future OpenSpec change name (`kebab-case`) |
+| Capability | Optional label (Content, Leads, …)—orientation only |
 | Goal | User-facing outcome |
-| Scope | In / out for this change only |
+| Scope | In / out for this change only; note reused existing features |
 | Acceptance | How to verify done |
 | Dependencies | Prior change IDs, or `none` |
 | Status | `pending` at plan time |
@@ -306,11 +309,12 @@ Tiny products: single `planning/product.md` embedding the one (or few) changes.
 ## Risks & assumptions
 - …
 
-## Capability: <Name>   <!-- omit Capability headings for tiny products -->
+## Ordered Changes
 
 ### CH-001: <Short title>
 Status: pending
 OpenSpec: kebab-slug
+Capability: Content   <!-- optional -->
 
 Goal:
 …
@@ -318,6 +322,7 @@ Goal:
 Scope:
 - In: …
 - Out: …
+- Reuses: existing auth (example)
 
 Acceptance:
 - …
@@ -327,6 +332,7 @@ Dependencies: none
 ### CH-002: …
 Status: pending
 OpenSpec: …
+Capability: Leads
 
 Goal:
 …
@@ -380,6 +386,8 @@ Product Planner stops here.
 - Minimal depth first—skip empty ritual
 - Decomposition fails if you only name capabilities/epics—always produce OpenSpec-sized changes
 - Prefer thin end-to-end value over UI-then-DB-then-admin layering
+- Order changes globally; Capability is a field, not a section that reorders work
+- Do not re-plan features that already exist unless they need modification
 - Questions before plan docs; persist product/roadmap/domain after final approval; `context.md` may land earlier when inbox is active
 - Do not auto-create empty `planning/inbox/`
 - Inbox tags only when materials exist
