@@ -1,6 +1,6 @@
 # product-planner
 
-Agent Skill for **pre-implementation product planning**: clarify the idea, discover requirements, define MVP, split into vertical slices, order delivery, and hand off enough context to start [OpenSpec](https://openspec.dev) changes.
+Agent Skill for **pre-implementation product planning**: clarify the idea, discover requirements, define MVP, decompose into optional capabilities and an **ordered queue of OpenSpec-sized changes**, then hand off the first pending change.
 
 It does **not** replace OpenSpec (proposals, specs, tasks) and does **not** write application code.
 
@@ -12,10 +12,11 @@ After an interactive session you should have:
 
 - A clear product intent and audience
 - An agreed MVP (in / out / later)
-- Vertical slices with dependencies and order (one slice is fine for a tiny MVP)
+- Optional capability groupings for orientation
+- An ordered change queue (`CH-001`…) with slug, goal, scope, acceptance, dependencies
 - Distinctions between confirmed facts, assumptions, and open questions
 - Optional grounding against materials in `planning/inbox/`
-- Suggested first OpenSpec change slugs (names + intent only)
+- Handoff pointing at the **first pending** change for `/opsx:propose`
 
 ## Process (short)
 
@@ -24,12 +25,16 @@ After an interactive session you should have:
 2. **Discovery** — questions, risks (grounded in inbox when present)  
 3. **Domain lite** — only if the domain is non-trivial  
 4. **Scope** — MVP boundary (**approval**)  
-5. **Decomposition** — vertical slices sized to the product  
-6. **Roadmap** — order and risks  
+5. **Decomposition** — capabilities (optional) → OpenSpec-sized changes  
+6. **Roadmap** — ordered change queue  
 7. **Review** — approve (**approval**), then write `planning/*.md`  
-8. **Handoff** — OpenSpec next steps; stop  
+8. **Handoff** — first pending change → suggest `/opsx:propose`; stop  
 
-Depth scales with the product. Only MVP and final plan are hard approval gates.
+Flow:
+
+`Idea → Discovery → MVP → Capabilities? → Ordered OpenSpec Changes → OpenSpec`
+
+Depth scales with the product. Only MVP and final plan are hard approval gates. Epic-sized “vertical slices” without further split are not enough.
 
 ## Inbox (optional)
 
@@ -39,7 +44,7 @@ If you have materials, put them in the **target product project**:
 planning/inbox/     # notes, briefs, screenshots, exports — any mess
 planning/context.md # short index written by the agent when inbox is used
 planning/product.md # after you approve the plan
-planning/roadmap.md # if multiple slices / ordering matters
+planning/roadmap.md # ordered OpenSpec-sized changes
 planning/domain.md  # only for non-trivial domains
 ```
 
@@ -50,9 +55,9 @@ The agent creates `planning/inbox/` when you start using it—not on every activ
 1. `/product-planner` (or describe a product idea so the skill activates)
 2. Optionally drop files into `planning/inbox/` and say `inbox ready`
 3. Answer clarifying questions
-4. Approve MVP, then the final plan
-5. Get `planning/product.md` (+ roadmap/domain as needed) and suggested OpenSpec change names
-6. Create the first OpenSpec change yourself (e.g. `/opsx:propose`)
+4. Approve MVP, then the final plan (including the change queue)
+5. Get `planning/product.md` + `planning/roadmap.md` (when needed)
+6. Run `/opsx:propose` for the first pending change slug from the roadmap
 
 ## Install
 
@@ -98,9 +103,9 @@ Use `-g` or `-p` to limit scope to global or project installs. Re-run `npx skill
 
 | Product Planner | OpenSpec |
 | --- | --- |
-| Discovery, MVP, slices, order | Concrete changes |
-| `planning/*.md` product context | `proposal.md`, delta specs, design, tasks |
-| Suggests change slugs | Creates and applies changes |
+| Discovery, MVP, capabilities, **ordered changes** | One concrete change at a time |
+| `planning/*.md` product context + change queue | `proposal.md`, delta specs, design, **tasks** |
+| Hands off first pending change | Creates and applies that change |
 
 ## License
 
