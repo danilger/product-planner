@@ -2,3 +2,7 @@
 *.swp
 .env
 .env.*
+
+# Local design scratch notes
+scratch.txt
+scratch_*

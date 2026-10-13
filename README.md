@@ -1,80 +1,62 @@
 # product-planner
 
-Agent Skill for **pre-implementation product planning**: clarify the idea; discover **product, technical, and UX/UI** preferences; define MVP; decompose into optional capabilities and an **ordered queue of OpenSpec-sized changes**; then hand off the first pending change.
+Agent Skill for **stage-gated product planning before implementation**: pick a communication language; optionally collect context; interview for intent/MVP; lock existing stack or choose a greenfield architecture; emit a **finely granulated** OpenSpec-ready change plan (sized for weak LLMs and Multica); hand off the first change and offer `AGENTS.md` links.
 
-It does **not** replace OpenSpec (proposals, specs, tasks) and does **not** write application code.
+It does **not** replace OpenSpec and does **not** write application code.
 
 Portable Agent Skills format ([agentskills.io](https://agentskills.io)). Works with Cursor and other compatible agents.
 
+## Commands
+
+| Command | Action |
+| --- | --- |
+| `/product-planner` | Start / restart at stage 0 |
+| `/next` | Advance one stage (only way forward) |
+| `/prev` | Go back one stage |
+| `/prev <N>` | Jump back to stage N (1…5) |
+
+Saying “nothing to add” does **not** advance — only `/next` does.
+
+Commands live in `skills/product-planner/commands/` and are mirrored to `.cursor/commands/` in this repo.
+
+## Pipeline
+
+`0 → 1 → 2 → 3 → 4 → 5`
+
+| Stage | What | Artifact (in skill folder) |
+| --- | --- | --- |
+| 0 | Language + rules | `00_pipeline_state.md` |
+| 1 | Context (skippable) | `02_context/`, `03_context_summary.md` (always) |
+| 2 | Interview | `04_interview.md` |
+| 3 | Project state / architecture | `01_project_state.md` |
+| 4 | Granulated change plan | `05_change_plan.md` |
+| 5 | Handoff + offer `AGENTS.md` links | chat |
+
+Project-state review comes **after** the product interview.
+
+Each stage starts with a short purpose brief and ends with: *anything to add? if not → `/next`*.
+
 ## What you get
 
-After an interactive session you should have:
-
-- A clear product intent and audience
-- An agreed MVP (in / out / later)
-- **Technical direction** (required / forbidden / existing / open)—or citations to `AGENTS.md` / architecture docs; sticky choices (framework, UI kit, backend shape) are confirmed or explicitly deferred, not guessed
-- **UX/UI direction** when the product has a meaningful UI (or an explicit N/A), including critical journeys that affect MVP / change boundaries
-- Optional capability groupings for orientation
-- An ordered change queue (`## Ordered Changes`, `CH-001`…) with slug, optional capability label, goal, scope, acceptance, dependencies
-- Distinctions between confirmed facts, assumptions, and open questions
-- Optional grounding against materials in `planning/inbox/`
-- Handoff pointing at the **first pending** change for `/opsx:propose`
-
-## Why technical and UX/UI discovery belong here
-
-OpenSpec designs **one change**. By then, cross-cutting choices (Next.js vs SPA, shadcn vs ad-hoc CSS, dark editorial vs generic dashboard) must already be fixed—or every coding agent invents its own product.
-
-Product Planner locks **preferences and constraints**. OpenSpec implements **within** them.
-
-Depth is adaptive: a CLI may skip UX/UI; a personal site may treat visual direction as mandatory before MVP.
-
-## Process (short)
-
-0. **Bootstrap** — read existing docs and implementation; offer optional inbox  
-1. **Intent** — problem, users, outcome  
-2. **Product Discovery** — scenarios, risks (grounded in inbox when present)  
-3. **Technical Discovery** — stack preferences, integrations, **forbidden** choices (cite existing canon when present; no silent Assumed on sticky stack choices)  
-4. **UX/UI Discovery** — visual direction, references, critical journeys (skip if no UI)  
-5. **Domain lite** — only if the domain is non-trivial  
-6. **Discovery Coverage** — internal check that material product / tech / UX gaps are closed or deferred; sticky decisions not Assumed  
-7. **Scope** — MVP boundary (**approval**)  
-8. **Decomposition** — capabilities (optional) → OpenSpec-sized changes  
-9. **Roadmap** — ordered change queue  
-10. **Review** — approve (**approval**), then write `planning/*.md`  
-11. **Handoff** — first pending change → suggest `/opsx:propose`; stop  
-
-Flow:
-
-`Idea → Product + Tech + UX Discovery → Coverage → MVP → Ordered OpenSpec Changes → OpenSpec`
-
-Only MVP and final plan are hard approval gates. Epic-sized “vertical slices” without further split are not enough.
-
-## Inbox (optional)
-
-If you have materials, put them in the **target product project**:
-
-```text
-planning/inbox/     # notes, briefs, screenshots, exports — any mess
-planning/context.md # short index written by the agent when inbox is used
-planning/product.md # after you approve the plan (includes Technical + UX/UI sections)
-planning/roadmap.md # global Ordered Changes queue (capability is a field)
-planning/domain.md  # only for non-trivial domains
-planning/technical.md  # optional — only if Technical Direction outgrows product.md
-planning/design.md     # optional — only if UX/UI Direction outgrows product.md
-```
-
-The agent creates `planning/inbox/` when you start using it—not on every activation. It does **not** auto-create `technical.md` / `design.md`. You can add files mid-session. Conflicts between inbox and your answers are surfaced, not silently merged.
-
-If the repo already has `AGENTS.md` or architecture docs for the stack, planning should **link** to them instead of duplicating rules.
+- Agreed communication language for the session
+- Optional context index (`03`) — empty file if skipped
+- Interview log with Confirmed / Assumption / Open
+- Project state: existing canon, overrides, or greenfield target (`[проверенные]` / `[в тренде]`, web search when available)
+- Ordered, **split-checked** changes (`SPLIT_FILES` / `SPLIT_BE_FE` / `SPLIT_DOMAIN` / `SPLIT_FUNC`) with links and Multica parallel/sequential hints
+- Handoff to first pending change → suggest `/opsx:propose`
+- Optional `AGENTS.md` artifact links (only after you agree)
 
 ## Example session
 
-1. `/product-planner` (or describe a product idea so the skill activates)
-2. Optionally drop files into `planning/inbox/` and say `inbox ready`
-3. Answer clarifying questions (product, tech preferences, UX/UI as relevant)
-4. Approve MVP, then the final plan (including the change queue)
-5. Get `planning/product.md` + `planning/roadmap.md` (when needed)
-6. Run `/opsx:propose` for the first pending change slug from the roadmap
+1. `/product-planner` → choose language
+2. Drop files into `skills/product-planner/02_context/` or skip
+3. `/next` → interview
+4. `/next` → confirm stack canon or pick greenfield stack
+5. `/next` → review granulated plan
+6. `/next` → handoff; optionally accept `AGENTS.md` links
+7. Run `/opsx:propose` for the first change slug
+
+Use `/prev` or `/prev 2` to rewind; later stages become `stale` and are rebuilt on the next forward pass.
 
 ## Install
 
@@ -94,35 +76,40 @@ npx skills add danilger/product-planner -g -a cursor -y
 cp -r skills/product-planner .agents/skills/product-planner
 # or
 cp -r skills/product-planner ~/.cursor/skills/product-planner
+
+# Slash commands (Cursor)
+mkdir -p .cursor/commands
+cp skills/product-planner/commands/*.md .cursor/commands/
 ```
 
 ## Update
 
-If you installed via the skills CLI, refresh from the recorded source:
-
 ```bash
 npx skills update product-planner -y
 ```
-
-Use `-g` or `-p` to limit scope to global or project installs. Re-run `npx skills add danilger/product-planner …` if the skill was installed manually or the lockfile has no source entry.
 
 ## Repository layout
 
 ```text
 ├── README.md
 ├── LICENSE
+├── scratch_02.md          # design source for v2
+├── .cursor/commands/      # /product-planner /next /prev
 └── skills/
     └── product-planner/
-        └── SKILL.md
+        ├── SKILL.md
+        ├── commands/
+        ├── templates/
+        └── 02_context/
 ```
 
 ## Boundary with OpenSpec
 
 | Product Planner | OpenSpec |
 | --- | --- |
-| Product + tech preferences + UX/UI direction, MVP, **ordered changes** | One concrete change at a time |
-| `planning/*.md` context + change queue | `proposal.md`, delta specs, design, **tasks** |
-| Forbidden stack / aesthetic drift | Implements within those constraints |
+| Intent, stack constraints, granulated ordered changes | One concrete change at a time |
+| Artifacts in the skill folder | `proposal.md`, specs, **tasks** |
+| Split flags + Multica hints | Implements within those constraints |
 | Hands off first pending change | Creates and applies that change |
 
 ## License

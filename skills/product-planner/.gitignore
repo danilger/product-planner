@@ -1,0 +1,8 @@
+# Runtime session artifacts in skill root only (keep templates/)
+/00_pipeline_state.md
+/01_project_state.md
+/03_context_summary.md
+/04_interview.md
+/05_change_plan.md
+/02_context/**
+!/02_context/.gitkeep
