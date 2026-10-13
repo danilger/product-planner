@@ -6,18 +6,18 @@ It does **not** replace OpenSpec and does **not** write application code.
 
 Portable Agent Skills format ([agentskills.io](https://agentskills.io)). Works with Cursor and other compatible agents.
 
-## Commands
+## Commands and keywords
 
-| Command | Action |
-| --- | --- |
-| `/product-planner` | Start / restart at stage 0 |
-| `/next` | Advance one stage (only way forward) |
-| `/prev` | Go back one stage |
-| `/prev <N>` | Jump back to stage N (1…5) |
+| Input | Kind | Action |
+| --- | --- | --- |
+| `/product-planner` | Cursor slash command | Start / restart at stage 0 |
+| `next` | Plain word in chat | Advance one stage (only way forward) |
+| `prev` | Plain word in chat | Go back one stage |
+| `prev <N>` | Plain word in chat | Jump back to stage N (1…5) |
 
-Saying “nothing to add” does **not** advance — only `/next` does.
+Saying “nothing to add” does **not** advance — only the word `next` does. Do **not** type `/next` or `/prev` (they are not slash commands).
 
-Commands live in `skills/product-planner/commands/` and are mirrored to `.cursor/commands/` in this repo.
+Slash command file: `.cursor/commands/product-planner.md` (also under `skills/product-planner/commands/` for packaging). Keyword behavior for `next` / `prev` is defined in the skill and mirrored as reference notes in `skills/product-planner/commands/`.
 
 ## Pipeline
 
@@ -34,7 +34,7 @@ Commands live in `skills/product-planner/commands/` and are mirrored to `.cursor
 
 Project-state review comes **after** the product interview.
 
-Each stage starts with a short purpose brief and ends with: *anything to add? if not → `/next`*.
+Each stage starts with a short purpose brief and ends with: *anything to add? if not → `next`*.
 
 ## What you get
 
@@ -50,13 +50,13 @@ Each stage starts with a short purpose brief and ends with: *anything to add? if
 
 1. `/product-planner` → choose language
 2. Drop files into `skills/product-planner/02_context/` or skip
-3. `/next` → interview
-4. `/next` → confirm stack canon or pick greenfield stack
-5. `/next` → review granulated plan
-6. `/next` → handoff; optionally accept `AGENTS.md` links
+3. `next` → interview
+4. `next` → confirm stack canon or pick greenfield stack
+5. `next` → review granulated plan
+6. `next` → handoff; optionally accept `AGENTS.md` links
 7. Run `/opsx:propose` for the first change slug
 
-Use `/prev` or `/prev 2` to rewind; later stages become `stale` and are rebuilt on the next forward pass.
+Use `prev` or `prev 2` to rewind; later stages become `stale` and are rebuilt on the next forward pass.
 
 ## Install
 
@@ -77,9 +77,9 @@ cp -r skills/product-planner .agents/skills/product-planner
 # or
 cp -r skills/product-planner ~/.cursor/skills/product-planner
 
-# Slash commands (Cursor)
+# Slash command (Cursor) — start only
 mkdir -p .cursor/commands
-cp skills/product-planner/commands/*.md .cursor/commands/
+cp skills/product-planner/commands/product-planner.md .cursor/commands/
 ```
 
 ## Update
@@ -94,11 +94,11 @@ npx skills update product-planner -y
 ├── README.md
 ├── LICENSE
 ├── scratch_02.md          # design source for v2
-├── .cursor/commands/      # /product-planner /next /prev
+├── .cursor/commands/      # /product-planner only
 └── skills/
     └── product-planner/
         ├── SKILL.md
-        ├── commands/
+        ├── commands/          # product-planner + next/prev keyword notes
         ├── templates/
         └── 02_context/
 ```

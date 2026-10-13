@@ -5,12 +5,13 @@ description: >-
   collect optional context; interview for intent/MVP; lock project state or
   greenfield stack; emit a finely granulated OpenSpec-ready change plan for
   weak LLMs and Multica; hand off first change and offer AGENTS.md links.
-  Advance only via /next; go back via /prev. Use when the user wants product
-  planning, MVP scope, roadmap, stack discovery, or pre-coding decomposition.
-  Do not use for OpenSpec propose/apply, writing tasks.md, or implementing code.
+  Advance only via the word next; go back via prev. Use when the user wants
+  product planning, MVP scope, roadmap, stack discovery, or pre-coding
+  decomposition. Do not use for OpenSpec propose/apply, writing tasks.md, or
+  implementing code.
 license: MIT
 metadata:
-  version: "2.0.0"
+  version: "2.0.1"
 ---
 
 # Product Planner
@@ -32,7 +33,7 @@ metadata:
 | `01_project_state.md` | 3 |
 | `05_change_plan.md` | 4 |
 
-Шаблоны: `templates/`. Команды: `commands/` (и `.cursor/commands/` в проекте skill).
+Шаблоны: `templates/`. Slash-команда старта: `.cursor/commands/product-planner.md` (и копия в `commands/`). Слова `next` / `prev` — **не** slash-команды, а ключевые слова в чате.
 
 ## Pipeline
 
@@ -49,41 +50,43 @@ metadata:
 
 Ревью репо / выбор стека — **после** интервью.
 
-## Commands (hard gates)
+## Keywords (hard gates)
 
-| Command | Effect |
+Это **слова в сообщении пользователя**, не Cursor slash-commands. Не писать их как `/next` или `/prev`.
+
+| Keyword | Effect |
 | --- | --- |
-| `/product-planner` | Старт / перезапуск с этапа 0 |
-| `/next` | Единственный способ **вперёд** на следующий этап |
-| `/prev` | Назад на `current − 1` (не ниже 1) |
-| `/prev <N>` | На этап N (`1…5`), только назад или на текущий |
+| `/product-planner` | Старт / перезапуск с этапа 0 (реальная slash-команда) |
+| `next` | Единственный способ **вперёд** на следующий этап |
+| `prev` | Назад на `current − 1` (не ниже 1) |
+| `prev <N>` | На этап N (`1…5`), только назад или на текущий |
 
-«Нет, дополнений нет» **не** двигает пайплайн — только `/next`.
+«Нет, дополнений нет» **не** двигает пайплайн — только слово `next`.
 
-При вызове `/next` или `/prev`: прочитать этот SKILL + `00_pipeline_state.md` и выполнить правила ниже.
+Когда пользователь пишет `next` или `prev` / `prev N`: прочитать этот SKILL + `00_pipeline_state.md` и выполнить правила ниже.
 
 ### End-of-stage (обязательно)
 
 После завершения работы этапа:
 
-> Есть ли у вас что дополнить в рамках этого этапа? Если нет — переход на следующий этап командой `/next`.
+> Есть ли у вас что дополнить в рамках этого этапа? Если нет — переход на следующий этап словом `next`.
 
-Стой. Жди `/next` | `/prev` | дополнения.
+Стой. Жди `next` | `prev` | дополнения.
 
 ### Start-of-stage (обязательно)
 
 В начале каждого этапа — **одна короткая фраза**: зачем этап и что на выходе.
 
-### `/next`
+### Keyword `next`
 
 1. Проверить: текущий этап завершён (`done` / `skipped`) или этап 0 только что отработал вход в 1.
 2. Если нет — отказать и сказать, чего не хватает.
 3. `current_stage += 1`; если следующий был `stale` — **перевыполнить**, не переиспользовать слепо.
 4. Бриф сути → работа этапа → end-of-stage вопрос.
 
-### `/prev` / `/prev <N>`
+### Keywords `prev` / `prev <N>`
 
-1. Вычислить N; вперёд через `/prev` — **отклонить**.
+1. Вычислить N; вперёд через `prev` — **отклонить**.
 2. `current_stage = N`; все этапы `> N` → `stale`.
 3. Сообщить, что поздние артефакты устарели; бриф этапа N; продолжить **на N**; не автопрогонять до конца.
 4. End-of-stage вопрос (или продолжение работы этапа, если ещё `in_progress`).
@@ -100,7 +103,7 @@ metadata:
 ## Language (stage 0)
 
 Явно спросить язык переписки и артефактов → `communication_language` в `00_pipeline_state.md`.  
-Дальше **вся** переписка и содержимое md — на этом языке (имена файлов и `/next`/`/prev` можно не переводить).  
+Дальше **вся** переписка и содержимое md — на этом языке (имена файлов и ключевые слова `next` / `prev` можно не переводить).  
 Смена mid-pipeline — только по явной просьбе.
 
 ## Closed-question format
@@ -128,8 +131,8 @@ metadata:
 
 1. Создать/сбросить `00_pipeline_state.md`.
 2. Спросить язык (≤5 + Другое; preferred ≈ язык первого сообщения).
-3. На выбранном языке объяснить правила: пайплайн; `/next`/`/prev`; end-of-stage вопрос; этап 1 можно пропустить (`03` всё равно); не кодим / не создаём OpenSpec; в конце предложим ссылки в `AGENTS.md`.
-4. Сразу войти в этап 1 с брифом (отдельный `/next` с 0 не нужен).
+3. На выбранном языке объяснить правила: пайплайн; слова `next` / `prev`; end-of-stage вопрос; этап 1 можно пропустить (`03` всё равно); не кодим / не создаём OpenSpec; в конце предложим ссылки в `AGENTS.md`.
+4. Сразу войти в этап 1 с брифом (отдельный `next` с 0 не нужен).
 
 ### 1 — Context
 
@@ -140,7 +143,7 @@ metadata:
 - Skip / пусто → всё равно создать `03` (`Status: empty|skipped`, `skip_context: true`) по шаблону.
 - При `skip_context: true` дальше не опираться на inbox.
 
-→ итог + end-of-stage → ждать `/next`.
+→ итог + end-of-stage → ждать `next`.
 
 ### 2 — Interview
 
@@ -154,7 +157,7 @@ metadata:
 4. Tech-стек не форсировать здесь.
 5. Писать в `04_interview.md`.
 
-→ summary Confirmed / Assumption / Open + end-of-stage → `/next`.
+→ summary Confirmed / Assumption / Open + end-of-stage → ждать `next`.
 
 ### 3 — Project state / architecture
 
@@ -183,7 +186,7 @@ metadata:
 
 Липкое (framework, форма BE/FE, UI kit если UI) — Confirmed, не тихий Assumption.
 
-→ итог + end-of-stage → `/next`.
+→ итог + end-of-stage → ждать `next`.
 
 ### 4 — Change plan (weak-LLM grain)
 
@@ -209,7 +212,7 @@ Exception `thin-vertical` только если иначе нет проверя
 
 Отдельно: очередь реализации; что параллельно в Multica и почему.
 
-→ итог + end-of-stage → `/next`.
+→ итог + end-of-stage → ждать `next`.
 
 ### 5 — Handoff
 
@@ -235,7 +238,7 @@ Exception `thin-vertical` только если иначе нет проверя
 
 **Do:** этапы по порядку; артефакты в skill folder; спрашивать до выдумок; грануляция + `SPLIT_*`; цитировать канон репо; предлагать AGENTS.md ссылки в конце.
 
-**Do not:** создавать OpenSpec changes / tasks / код без явной просьбы вне этого skill; silent-merge противоречий; закрывать липкий стек Assumption; автодвигать пайплайн без `/next`; прыгать вперёд через `/prev`.
+**Do not:** создавать OpenSpec changes / tasks / код без явной просьбы вне этого skill; silent-merge противоречий; закрывать липкий стек Assumption; автодвигать пайплайн без слова `next`; прыгать вперёд через `prev`; оформлять `next`/`prev` как slash-команды с `/`.
 
 ## Decomposition principles
 
